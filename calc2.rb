@@ -89,6 +89,7 @@ class Reducer
     @str_exps = nil
     @obj_exps = []
     @priority_exp = nil
+    output
   end
 
   def initial_expressions
@@ -215,9 +216,6 @@ class Parser
 	end
 
 	def execute_calculation
-		@calculation = first_element + last_element if @symbol == "+"
-		@calculation = first_element - last_element if @symbol == "-"
-		@calculation = first_element * last_element if @symbol == "*"
-		@calculation = (first_element / last_element) if @symbol == "/"
+		@calculation = first_element.send(@symbol, last_element)
 	end
 end

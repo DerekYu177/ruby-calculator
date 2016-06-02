@@ -107,4 +107,10 @@ class TestCalculator < Minitest::Test
     expected = 13
     assert_equal(expected, @par.calculation)
   end
+
+  def test_lol
+    @red.input = "(4+5)*((6+1)+1)"
+    @red.output
+    assert_equal(72, @red.priority_exp.value)
+  end
 end
