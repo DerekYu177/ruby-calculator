@@ -89,7 +89,6 @@ class Reducer
     @str_exps = nil
     @obj_exps = []
     @priority_exp = nil
-    output
   end
 
   def initial_expressions

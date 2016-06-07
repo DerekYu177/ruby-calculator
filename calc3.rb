@@ -11,24 +11,44 @@ end
 class Expression
   def self.parse(input)
     scanner = StringScanner.new(input.gsub(/\s/, ""))
-    parse_expression(scanner)
+    expression = parse_expression(scanner)
+    unless scanner.eos?
+      raise "scanner not empty \"#{scanner.rest}\" still remaining"
+    end
+    expression
   end
 
   def self.parse_expression(scanner)
-    if number = scanner.scan(/\d+/)
-      Value.new(number)
-    elsif scanner.scan(/\(/)
-      operation = parse_operation(scanner)
-      scanner.scan(/\)/)
+    if operation = parse_operation(scanner, /([\d\+\-]+)([\*\/])/)
       operation
+    elsif operation = parse_operation(scanner, /([\d]+)([\+\-])/)
+      operation
+    elsif number = scanner.scan(/\d+/) #test for singular numbers
+      Value.new(number)
+    elsif scanner.scan(/\(/) #test for bracket expression
+      expression = parse_expression(scanner)
+
+      if scanner.scan(/\)/)
+        expression
+      end
+      if operator = scanner.scan(/[\+\-\*\/]/)
+        left = expression
+        right = parse_expression(scanner)
+        scanner.scan(/\)/)
+        Operation.new(left, operator, right)
+      else
+        expression
+      end
     end
   end
 
-  def self.parse_operation(scanner)
-    left = parse_expression(scanner)
-    operator = scanner.scan(/[\+\-\*\/]/)
-    right = parse_expression(scanner)
-    Operation.new(left, operator, right)
+  def self.parse_operation(scanner, regex)
+    if scanner.scan(regex)
+      left = parse(scanner[1])
+      operator = scanner[2]
+      right = parse_expression(scanner)
+      Operation.new(left, operator, right)
+    end
   end
 end
 

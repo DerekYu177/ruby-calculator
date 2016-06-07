@@ -114,3 +114,5 @@ class TestCalculator < Minitest::Test
     assert_equal(72, @red.priority_exp.value)
   end
 end
+
+((104 4)*5)+65 6*5+(48 234)
